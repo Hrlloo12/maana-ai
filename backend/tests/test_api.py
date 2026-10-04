@@ -32,8 +32,10 @@ def test_api_end_to_end(workflow):
         assert dash["content_sessions"] >= 1
         assert dash["meaning_gaps_resolved"] >= 1
         assert dash["recent_sessions"][0]["session_id"]
-        docs = client.get("/api/sources").json()["documents"]
-        assert docs and all(d["source_name_ar"] and d["reference_ar"] for d in docs)
+        sources = client.get("/api/sources", params={"q": "الزكاة"}).json()
+        assert {c["id"] for c in sources["collections"]} == {"quran", "bukhari", "muslim"}
+        assert sources["total"] > 20000
+        assert sources["results"] and all(r["reference_ar"] for r in sources["results"])
         assert client.get("/api/demo").json()["scenarios"]
 
 

@@ -23,7 +23,7 @@ METRIC_LABELS = {
     "background_leakage_rate": "Background leakage into intended meaning (lower is better)",
     "meaning_gap_detection_accuracy": "Meaning Gap Detection Accuracy (status)",
     "gap_type_accuracy": "Gap Type Accuracy",
-    "topic_gate_accuracy": "RAG topic gate accuracy",
+    "topic_gate_accuracy": "RAG scope gate accuracy (in scope vs. out of scope)",
     "rag_relevance_precision": "RAG Relevance (precision of kept evidence)",
     "irrelevant_retrieval_rejection": "Irrelevant retrieval rejected (out-of-scope content)",
     "citation_correctness": "Citation Correctness",
@@ -113,12 +113,13 @@ def evaluate_case(wf, case: dict, sid: str) -> dict:
     row["status_ok"] = status in case["expected_status"]
     row["abstained"] = stage == "abstained"
     row["expected_abstain"] = case["expected_status"] == ["insufficient_evidence"]
-    row["topic_ok"] = state.get("rag_primary_topic", "") == case["expected_primary_topic"]
+    row["topic_ok"] = (state.get("rag_abstain_reason") != "no_covered_topic") == case["expected_in_scope"]
 
     kept = state.get("rag_context", [])
     row["kept_evidence"] = [c["doc_id"] for c in kept]
     row["evidence_relevant"] = [
-        c["metadata"]["topic"] in case["expected_topics"] and mentions_any(c["text"], case["concept_terms"])
+        c["metadata"]["topic"] in case["expected_topics"]
+        and mentions_any(f"{c['text']} {c.get('text_ar', '')}", case["concept_terms"])
         for c in kept
     ]
 
@@ -255,10 +256,10 @@ def run_retrieval_only(cases: list[dict]) -> dict:
     retriever = get_retriever()
     rows, precision = [], []
     for case in cases:
-        if not case["expected_primary_topic"]:
+        if not case["expected_in_scope"]:
             continue
-        chunks = retriever.search([case["content"]], limit=settings.rag_top_k, topics=case["expected_topics"])
-        rel = [c.metadata.topic in case["expected_topics"] and mentions_any(c.text, case["concept_terms"]) for c in chunks]
+        chunks = retriever.search([case["content"]], limit=settings.rag_top_k)
+        rel = [mentions_any(f"{c.text} {c.text_ar}", case["concept_terms"]) for c in chunks]
         precision += [float(x) for x in rel]
         rows.append({"id": case["id"], "top": [(c.doc_id, c.relevance_score) for c in chunks]})
     return {"mode": "retrieval-only (dense search, no LLM)", "metrics": {"rag_relevance_precision": pct(precision)},

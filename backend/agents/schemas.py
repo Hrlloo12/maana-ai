@@ -37,10 +37,11 @@ STRATEGY_FIT: dict[str, list[str]] = {
 
 
 class QueryPlan(BaseModel):
-    primary_topic: str = Field(default="", description="ONE topic from the available list, or empty")
-    related_topics: list[str] = Field(default_factory=list, description="At most one closely confused topic")
-    key_terms: list[str] = Field(default_factory=list, description="Names of the concept (English, transliteration, Arabic)")
-    search_queries: list[str] = Field(default_factory=list, description="2-3 short English queries")
+    in_scope: bool = Field(default=True, description="False when the content is not about an Islamic concept the Qur'an or hadith address")
+    concept: str = Field(default="", description="Short English name of the concept")
+    concept_ar: str = Field(default="", description="Arabic name of the concept")
+    key_terms: list[str] = Field(default_factory=list, description="Names of the concept in Arabic and in English translation")
+    search_queries: list[str] = Field(default_factory=list, description="2 English and 2 Arabic short queries")
 
 
 class IntendedConcept(BaseModel):
@@ -127,6 +128,7 @@ class EvidenceItem(BaseModel):
     reference_ar: str = ""
     topic: str
     supporting_text: str
+    supporting_text_ar: str = ""
     relevance_score: float
     verified_quote: str = ""
 
@@ -139,6 +141,7 @@ class ConceptResult(BaseModel):
     user_understanding: str = ""
     explanation: str = ""
     evidence_ids: list[str] = Field(default_factory=list)
+    evidence_quote: str = ""
 
 
 class Misunderstanding(BaseModel):

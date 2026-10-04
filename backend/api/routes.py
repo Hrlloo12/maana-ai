@@ -12,8 +12,8 @@ from graph.maana_graph import WorkflowStageError
 from graph.progress import get_progress
 from llm import LLMError
 from llm.client import DEFAULT_MODELS
+from rag.ingest import load_collections
 from rag.retriever import get_retriever
-from rag.schemas import SourceFile
 from services.session_service import dashboard, get_workflow, persist, session_view
 
 logger = logging.getLogger("maana.api")
@@ -131,21 +131,31 @@ def get_dashboard():
 
 
 @router.get("/sources")
-def get_sources():
-    docs = []
-    for path in sorted(settings.sources_dir.glob("*.json")):
-        sf = SourceFile.model_validate_json(path.read_text(encoding="utf-8"))
-        docs.extend({"topic": sf.topic, **d.model_dump()} for d in sf.documents)
-    return {
-        "topics": get_retriever().topics,
-        "production_filter": sorted(settings.allowed_review_statuses),
-        "documents": docs,
-    }
+def get_sources(q: str = "", limit: int = 12):
+    retriever = get_retriever()
+    counts: dict[str, int] = {}
+    for c in retriever.chunks:
+        counts[c.metadata.topic] = counts.get(c.metadata.topic, 0) + 1
+    collections = [
+        {"id": c.id, "name": c.name, "name_ar": c.name_ar, "license": c.license, "attribution": c.attribution,
+         "homepage": c.homepage, "count": counts.get(c.id, 0)}
+        for c in load_collections()
+    ]
+    results = []
+    if q.strip():
+        for c in retriever.search([q.strip()], limit=max(1, min(limit, 30))):
+            results.append({
+                "id": c.chunk_id, "topic": c.metadata.topic, "source_name": c.metadata.source_name,
+                "source_name_ar": c.metadata.source_name_ar, "reference": c.metadata.reference,
+                "reference_ar": c.metadata.reference_ar, "text": c.text, "text_ar": c.text_ar,
+                "score": c.relevance_score,
+            })
+    return {"collections": collections, "total": len(retriever.chunks), "query": q.strip(), "results": results}
 
 
 @router.get("/demo")
 def get_demo():
     if not settings.demo_mode:
         raise HTTPException(status_code=404, detail="وضع الأمثلة غير مفعّل.")
-    path = settings.sources_dir.parent / "demo_inputs.json"
+    path = settings.corpus_file.parent / "demo_inputs.json"
     return json.loads(path.read_text(encoding="utf-8"))

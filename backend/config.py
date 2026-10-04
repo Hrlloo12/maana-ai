@@ -35,10 +35,12 @@ class Settings:
         "EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     ).strip()
     rag_top_k: int = int(os.getenv("RAG_TOP_K", "4"))
-    rag_min_relevance: float = _float("RAG_MIN_RELEVANCE", 0.5)
+    rag_min_relevance: float = _float("RAG_MIN_RELEVANCE", 0.6)
+    rag_min_relevance_quran: float = _float("RAG_MIN_RELEVANCE_QURAN", 0.45)
     rag_relative_margin: float = _float("RAG_RELATIVE_MARGIN", 0.15)
     rag_duplicate_similarity: float = _float("RAG_DUPLICATE_SIMILARITY", 0.8)
-    sources_dir: Path = BASE_DIR / "data" / "sources"
+    corpus_file: Path = BASE_DIR / "data" / "corpus.json"
+    raw_dir: Path = BASE_DIR / "data" / "raw"
     index_dir: Path = BASE_DIR / "data" / "index"
     model_cache_dir: Path = BASE_DIR / "data" / "model_cache"
 

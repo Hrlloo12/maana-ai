@@ -161,9 +161,7 @@ function SessionDetails({ session }: { session: SessionView }) {
               <tbody>
                 {decisions.map((d) => (
                   <tr key={d.doc_id + d.score} className="border-t border-sand-200 align-top">
-                    <td className="py-2 pe-3 font-latin text-navy-700" dir="ltr">
-                      {d.reference}
-                    </td>
+                    <td className="py-2 pe-3 text-navy-700">{d.reference_ar || d.reference}</td>
                     <td className="py-2 pe-3 text-navy-500">{topicName(d.topic)}</td>
                     <td className="py-2 pe-3 font-latin text-navy-500">{d.score.toFixed(3)}</td>
                     <td className={`py-2 ${d.decision === "kept" ? "font-semibold text-emerald-700" : "text-navy-500"}`}>

@@ -21,7 +21,7 @@ from agents.schemas import (
     Verification,
     VerificationLLMOutput,
 )
-from agents.text import adds_restriction, grounded_in, jaccard
+from agents.text import adds_restriction, describes_omission, grounded_in, jaccard
 from rag.schemas import RetrievedChunk
 from scoring.meaning_alignment import MIN_SCORABLE_SHARE, alignment_score, classify, normalise_weights
 
@@ -120,6 +120,11 @@ def validate_verification(
             )
     judged = {j.concept_id.strip().upper(): j.gap_type for j in out.judgements}
     for i, m in enumerate(out.misunderstandings, 1):
+        if describes_omission(m.user_understood):
+            issues.append(
+                f"Misunderstanding {i} describes something the reader did not mention. An omission is not a "
+                "misunderstanding: remove it, and judge the concept by what the reader actually said."
+            )
         if user_response and adds_restriction(m.user_understood, user_response):
             issues.append(
                 f"Misunderstanding {i} attributes a restriction (only / merely / فقط / مجرد) that the reader never "
@@ -239,6 +244,7 @@ def build_verification(
             user_understanding=j.user_understanding,
             explanation=j.explanation,
             evidence_ids=ids,
+            evidence_quote=j.evidence_quote if ids else "",
         )
 
     misunderstandings: list[Misunderstanding] = []
@@ -251,6 +257,10 @@ def build_verification(
             continue
         if user_response is not None and adds_restriction(m.user_understood, user_response):
             rejected.append(RejectedClaim(claim=m.user_understood, reason="restriction_not_said"))
+            unsaid.add(m.related_concept_id.strip().upper())
+            continue
+        if describes_omission(m.user_understood):
+            rejected.append(RejectedClaim(claim=m.user_understood, reason="omission_not_misunderstanding"))
             unsaid.add(m.related_concept_id.strip().upper())
             continue
         ids = supporting_ids(m.evidence_ids, m.evidence_quote, evidence)
@@ -283,7 +293,9 @@ def build_verification(
         if related and results[related].gap_type == "correct_understanding":
             corrections.append(f"{related} changed from correct_understanding to {m.gap_type}")
             results[related].gap_type = m.gap_type
-            results[related].evidence_ids = results[related].evidence_ids or ids
+            if not results[related].evidence_ids:
+                results[related].evidence_ids = ids
+                results[related].evidence_quote = m.evidence_quote if ids else ""
 
     explained = {m.related_concept_id for m in misunderstandings}
     for cid in unsaid - explained:
@@ -302,6 +314,7 @@ def build_verification(
                     why_it_happened=r.explanation,
                     related_concept_id=r.concept_id,
                     evidence_ids=r.evidence_ids,
+                    evidence_quote=r.evidence_quote,
                     source_reference=references_for(r.evidence_ids, evidence),
                 )
             )
@@ -339,6 +352,7 @@ def build_verification(
             reference_ar=c.metadata.reference_ar,
             topic=c.metadata.topic,
             supporting_text=c.text,
+            supporting_text_ar=c.text_ar,
             relevance_score=c.relevance_score,
             verified_quote=quotes.get(c.evidence_id, ""),
         )

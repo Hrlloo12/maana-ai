@@ -1,0 +1,39 @@
+{
+  "collections": [
+    {
+      "id": "quran",
+      "kind": "quran",
+      "name": "The Holy Qur'an (Tanzil Uthmani text)",
+      "name_ar": "القرآن الكريم (النص العثماني من تنزيل)",
+      "url": "https://raw.githubusercontent.com/gptforjoomla/Tanzil/master/Packages/com_tanzil/site/resources/quran/quran-uthmani.txt",
+      "metadata_url": "https://tanzil.net/res/text/metadata/quran-data.js",
+      "file": "quran-uthmani.txt",
+      "metadata_file": "quran-data.js",
+      "license": "Tanzil Quran Text, Copyright (C) 2008-2010 Tanzil.net, Creative Commons Attribution 3.0. Verbatim use only; the text is not modified.",
+      "attribution": "Tanzil.net",
+      "homepage": "https://tanzil.net"
+    },
+    {
+      "id": "bukhari",
+      "kind": "hadith",
+      "name": "Sahih al-Bukhari",
+      "name_ar": "صحيح البخاري",
+      "url": "https://raw.githubusercontent.com/SENODROOM/sahih-al-bukhari/main/data/bukhari.json",
+      "file": "bukhari.json",
+      "license": "AGPL-3.0 (SENODROOM/sahih-al-bukhari). Downloaded at index time and not redistributed in this repository.",
+      "attribution": "SENODROOM/sahih-al-bukhari",
+      "homepage": "https://github.com/SENODROOM/sahih-al-bukhari"
+    },
+    {
+      "id": "muslim",
+      "kind": "hadith",
+      "name": "Sahih Muslim",
+      "name_ar": "صحيح مسلم",
+      "url": "https://raw.githubusercontent.com/SENODROOM/sahih-muslim/main/data/muslim.json",
+      "file": "muslim.json",
+      "license": "AGPL-3.0 (SENODROOM/sahih-muslim). Downloaded at index time and not redistributed in this repository.",
+      "attribution": "SENODROOM/sahih-muslim",
+      "homepage": "https://github.com/SENODROOM/sahih-muslim"
+    }
+  ]
+}

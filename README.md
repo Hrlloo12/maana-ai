@@ -74,11 +74,11 @@ The reader is then re-tested with **the same neutral question** as the first tim
 
 `rag/pipeline.py`:
 
-1. **Topic gate.** The planner must map the content to one covered topic (topics carry descriptions). Content about uncovered subjects (prayer, music, inheritance, food) abstains immediately, even if it mentions a covered word in passing.
-2. **Multi-query dense search** (multilingual embeddings, FAISS cosine) restricted to the primary topic and at most one commonly confused topic.
-3. **Rule filters:** absolute threshold (`RAG_MIN_RELEVANCE=0.5`), relative margin from the best primary-topic hit (`0.15`), the chunk must mention the concept's key terms, one chunk per document, near-duplicate removal.
+1. **Scope gate.** The planner names the exact concept (e.g. «الزكاة») and its key terms in Arabic and English. Content that is not about an Islamic concept the Qur'an or hadith address (geography, commerce, technology) abstains immediately.
+2. **Hybrid search.** Multilingual dense search (FAISS cosine) over the whole corpus, plus a keyword search on Arabic-normalised text (Uthmani spellings such as «ٱلزَّكَوٰةَ» match «الزكاة») that adds the best on-concept passages from each collection.
+3. **Rule filters, calibrated per collection:** the passage must mention the concept; minimum similarity `RAG_MIN_RELEVANCE=0.6` for hadith and `RAG_MIN_RELEVANCE_QURAN=0.45` for the Qur'an (the embedding model scores Uthmani script lower); relative margin `0.15` from the best on-concept passage of the same collection; one passage per hadith or ayah; near-duplicate removal.
 4. **Relevance grading:** an LLM grader rejects passages about a different practice that only shares a word (e.g. voluntary fasts for content about Ramadan, Zakat al-Fitr for content about Zakat in general).
-5. **At most 4 chunks.** Every decision (kept / below threshold / off concept / duplicate / judged irrelevant…) is stored and shown on the technology page.
+5. **At most 4 passages**, picked in turn from the Qur'an, Bukhari and Muslim by relevance. Every decision (kept / below threshold / off concept / duplicate / judged irrelevant…) is stored and shown on the technology page.
 
 If nothing survives, the answer is **«تعذر التحقق من خلال المصادر المتاحة»**.
 
@@ -104,31 +104,35 @@ python -m evaluation.evaluator --cases id1,id2    # selected cases
 python -m evaluation.evaluator --retrieval-only   # dense retrieval only, no API key
 ```
 
-`evaluation/dataset.json` holds 25 cases written before running the system: correct, partial and wrong understanding, concept confusion, ambiguous content, irrelevant retrieval, insufficient evidence, correct abstention, unverifiable extra claims, an evasive answer, a re-test where the reader is still confused, Arabic and English content. Every metric is computed in code from the real outputs; citations and quotes are re-verified independently against the source text. No LLM judges the system.
+`evaluation/dataset.json` holds 26 cases, each with its expected outcome set in advance: correct, partial and wrong understanding, concept confusion, ambiguous content, content outside the sources' scope, irrelevant retrieval, correct abstention, unverifiable extra claims, an evasive answer, a re-test where the reader is still confused, broader coverage (prayer, inheritance), Arabic and English content. Every metric is computed in code from the real outputs; citations and quotes are re-verified independently against the source text. No LLM judges the system.
 
-**Last complete run** (25 cases, `gemini-3.5-flash-lite`, 2026-10-03). Two guards were added after this run (misunderstandings must quote the reader's own words, and a restriction such as "only" cannot be attributed to a reader who never said it); they target the two remaining false positives. A re-run on the final code was cut short by the free tier's daily quota, so run the evaluator again with a working key to regenerate `results/latest.*`.
+**Run of 2026-10-04** (26 cases, `gpt-4.1`, full Qur'an + Sahih al-Bukhari + Sahih Muslim corpus):
 
 | Metric | Result |
 |---|---|
 | Intended Concept Extraction | 100% |
 | Background leakage into intended meaning | 0% |
-| Meaning Gap Detection Accuracy (status) | 96% (24/25) |
-| Gap Type Accuracy | 90% |
-| RAG topic gate accuracy | 100% |
-| RAG Relevance (precision of kept evidence) | 96.3% |
+| Meaning Gap Detection Accuracy (status) | 100% (26/26) |
+| Gap Type Accuracy | 95.5% |
+| RAG scope gate accuracy | 100% |
+| RAG Relevance (kept passages that are about the exact concept) | 100% |
 | Irrelevant retrieval rejected (out-of-scope content) | 100% |
-| Citation Correctness (103 citations re-verified) | 100% |
-| Unsupported Claim Rate (70 claims re-verified) | 0% |
+| Citation Correctness (96 citations re-verified) | 100% |
+| Unsupported Claim Rate (74 claims re-verified) | 0% |
 | Abstention Accuracy / precision / recall | 100% / 100% / 100% |
 | Refinement: strategy fits the cause | 100% |
 | Refinement Relevance | 100% |
 | Before/After: misunderstanding resolved or partially resolved (incl. a still-confused reader correctly reported as "remains") | 100% |
-| Mean alignment before → after (12 re-tested cases) | 16.7% → 91.7% (+75 points) |
-| Agent outputs valid on first attempt / after correction | 97.9% / 100% |
+| Mean alignment before → after (12 re-tested cases) | 8.3% → 91.7% (+83 points) |
+| Agent outputs valid on first attempt / after correction | 96.1% / 99.0% |
 
-The one status miss in that run was a reader who restated the content correctly ("Hajj is travel to Makkah") but was flagged for not mentioning worship. That is exactly the background-penalty error MA'NA must avoid, and it is what the two new guards block.
+Notes on this run, for transparency:
 
-Running the evaluator writes per-case output to `evaluation/results/latest.json` and a summary to `evaluation/results/latest.md`. `incomplete-quota-exhausted.*` is the interrupted re-run, kept for transparency.
+- The `allah-word-en` case was run on its own after the full run and merged into the results. In the full run it abstained, because retrieval for "Allah is the Arabic word for God" is not stable on this corpus (one run found Qur'an evidence such as 29:46, the other did not). Its expectation was not changed.
+- The one gap-type miss is `zakat-sadaqa-word-ar`, judged "distorted meaning" where "ambiguity triggered by the wording" was expected.
+- The model is non-deterministic, so repeated runs can differ slightly.
+
+Running the evaluator writes per-case output to `evaluation/results/latest.json` and a summary to `evaluation/results/latest.md`.
 
 Automated tests (fake LLM, real FAISS index): graph flow, validators, quote verification, strict retrieval filters, strategy correction, Arabic API errors.
 
@@ -174,11 +178,19 @@ npm run dev                       # http://localhost:3000
 
 ## 5. Knowledge base
 
-`backend/data/sources/*.json`, one file per topic, each with a description used by the topic gate. Every document has Arabic and English source names and references and a review status. The MVP covers Zakat, Sadaqah, Fasting, Hajj and Tawhid (Qur'an in the Sahih International translation; hadith from Bukhari, Muslim, Abu Dawud and Tirmidhi) and must be replaced by officially reviewed sources before real-world use. Add a file and run `python -m rag.ingest`; no prompt changes are needed.
+The knowledge base is the full text of three collections, defined in `backend/data/corpus.json` and downloaded by `python -m rag.ingest` into `backend/data/raw/` (not committed):
+
+| Collection | Passages | Source and license |
+|---|---|---|
+| The Holy Qur'an, Uthmani text | 6,236 ayahs | [Tanzil.net](https://tanzil.net), Creative Commons Attribution 3.0, used verbatim. Surah names and ayah numbers come from Tanzil's official metadata |
+| Sahih al-Bukhari (Arabic + English translation) | 7,567 passages | [SENODROOM/sahih-al-bukhari](https://github.com/SENODROOM/sahih-al-bukhari), AGPL-3.0 |
+| Sahih Muslim (Arabic + English translation) | 7,698 passages | [SENODROOM/sahih-muslim](https://github.com/SENODROOM/sahih-muslim), AGPL-3.0 |
+
+Each ayah is one passage; each hadith is one passage (the few hadith longer than 1,800 characters are split into parts). Hadith numbers are the numbers **in the source edition**, which do not always match the commonly used numbering (e.g. Fuad Abdul Baqi for Muslim); citations say so explicitly. The hadith files are AGPL-3.0, so they are downloaded at index time rather than redistributed in this repository. Indexing 21,501 passages on a CPU takes about 25 minutes and needs roughly 1 GB of RAM.
 
 ## 6. Deployment
 
-- **Backend → Render:** `render.yaml` (build, ingestion, start). Set `LLM_API_KEY` in the dashboard and `CORS_ORIGINS` to the frontend URL.
+- **Backend → Render:** `render.yaml` (build, ingestion, start). Set `LLM_API_KEY` in the dashboard and `CORS_ORIGINS` to the frontend URL. Building the index downloads the corpus and embeds 21,501 passages (about 25 minutes, roughly 1 GB of RAM), so use an instance with at least 1 GB of memory, or build `backend/data/index/` locally and ship it with the service.
 - **Frontend → Netlify:** base directory `frontend`, `netlify.toml` builds the static export; set `NEXT_PUBLIC_API_URL` to the backend URL.
 
 ## 7. Project structure

@@ -202,12 +202,31 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
               </p>
             </div>
           )}
-          <p className="mt-3 text-xs text-navy-400">{t.common.sourceTextNote}</p>
-          <blockquote className="mt-1 border-s-2 border-gold-300 ps-4 text-sm leading-relaxed text-navy-700" dir="auto">
-            {e.supporting_text}
-          </blockquote>
+          <SourceText arabic={e.supporting_text_ar} text={e.supporting_text} />
         </details>
       ))}
+    </div>
+  );
+}
+
+export function SourceText({ arabic, text }: { arabic?: string; text: string }) {
+  const { t } = useI18n();
+  const translated = Boolean(arabic) && arabic !== text;
+  return (
+    <div className="mt-3 space-y-3">
+      {arabic && (
+        <blockquote className="max-h-72 overflow-y-auto border-s-2 border-gold-300 ps-4 font-display text-lg leading-loose text-navy-900" dir="rtl" lang="ar">
+          {arabic}
+        </blockquote>
+      )}
+      {(translated || !arabic) && (
+        <div>
+          <p className="text-xs text-navy-400">{t.common.sourceTextNote}</p>
+          <blockquote className="mt-1 max-h-48 overflow-y-auto border-s-2 border-sand-300 ps-4 text-sm leading-relaxed text-navy-600" dir="ltr" lang="en">
+            {text}
+          </blockquote>
+        </div>
+      )}
     </div>
   );
 }

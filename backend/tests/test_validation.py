@@ -170,3 +170,30 @@ def test_concept_is_restored_when_its_only_misunderstanding_was_not_said():
     v = build_verification(meaning("fasting"), out, [chunk()], user_response="Muslims don't eat or drink from dawn to sunset.")
     assert v.concept_results[0].gap_type == "correct_understanding"
     assert v.alignment_score == 1.0 and v.status == "understood"
+
+
+def test_omission_described_as_misunderstanding_is_rejected():
+    from agents.text import describes_omission
+    assert describes_omission("الزكاة نوع من العطاء دون تحديد إلزاميتها")
+    assert describes_omission("Reader calls it giving without mentioning that it is obligatory")
+    assert not describes_omission("الزكاة تبرع اختياري")
+    out = VerificationLLMOutput.model_validate({
+        "judgements": [{"concept_id": "C1", "gap_type": "ambiguity_triggered", "explanation": "x", "evidence_ids": ["E1"],
+                        "evidence_quote": "It is an obligatory act of worship, not a voluntary donation."}],
+        "misunderstandings": [{"user_understood": "الزكاة نوع من العطاء دون تحديد إلزاميتها", "gap_type": "ambiguity_triggered",
+                               "reader_quote": "a kind of giving", "accurate_meaning": "x", "related_concept_id": "C1",
+                               "evidence_ids": ["E1"],
+                               "evidence_quote": "It is an obligatory act of worship, not a voluntary donation."}],
+    })
+    v = build_verification(meaning("giving"), out, [chunk()], user_response="Zakat is a kind of giving that is part of Islam.")
+    assert v.status == "understood" and v.misunderstandings == []
+    assert v.rejected_claims[0].reason == "omission_not_misunderstanding"
+
+
+def test_auto_explained_misunderstanding_keeps_verified_quote():
+    out = VerificationLLMOutput.model_validate({
+        "judgements": [{"concept_id": "C1", "gap_type": "ambiguity_triggered", "explanation": "x", "evidence_ids": ["E1"],
+                        "evidence_quote": "It is an obligatory act of worship, not a voluntary donation."}],
+    })
+    v = build_verification(meaning("giving"), out, [chunk()])
+    assert v.misunderstandings[0].evidence_quote

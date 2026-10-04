@@ -53,9 +53,9 @@ def test_hajj_confused_with_umrah_uses_comparison_and_is_resolved(workflow):
 def test_zakat_ambiguity_triggered_refine_and_retest(workflow, fake_llm):
     sid = "t-zakat"
     state = workflow.start(sid, ZAKAT, "English", "English")
-    assert state["rag_primary_topic"] == "zakat"
+    assert state["rag_primary_topic"] == "الزكاة"
     assert 0 < len(state["rag_context"]) <= 4
-    assert all(c["metadata"]["topic"] in {"zakat", "sadaqah"} for c in state["rag_context"])
+    assert all(c["metadata"]["topic"] in {"quran", "bukhari", "muslim"} for c in state["rag_context"])
     assert state["meaning_analysis"]["potential_ambiguities"][0]["phrase"] == "charity"
 
     state = workflow.submit_response(sid, "It is an optional donation you can choose to give.")

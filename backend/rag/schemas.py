@@ -7,21 +7,18 @@ from pydantic import BaseModel, Field
 ReviewStatus = Literal["reviewed", "pending_review"]
 
 
-class SourceDocument(BaseModel):
+class Collection(BaseModel):
     id: str
-    source_name: str
-    source_name_ar: str = ""
-    reference: str
-    reference_ar: str = ""
-    language: str = "en"
-    review_status: ReviewStatus = "pending_review"
-    text: str
-
-
-class SourceFile(BaseModel):
-    topic: str
-    description: str = ""
-    documents: list[SourceDocument]
+    kind: Literal["quran", "hadith"]
+    name: str
+    name_ar: str
+    url: str
+    metadata_url: str = ""
+    file: str
+    metadata_file: str = ""
+    license: str
+    attribution: str
+    homepage: str
 
 
 class ChunkMetadata(BaseModel):
@@ -30,14 +27,17 @@ class ChunkMetadata(BaseModel):
     topic: str
     reference: str
     reference_ar: str = ""
+    chapter: str = ""
+    chapter_ar: str = ""
     language: str
-    review_status: ReviewStatus
+    review_status: ReviewStatus = "reviewed"
 
 
 class Chunk(BaseModel):
     chunk_id: str
     doc_id: str
     text: str
+    text_ar: str = ""
     metadata: ChunkMetadata
 
 

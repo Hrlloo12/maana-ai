@@ -56,13 +56,15 @@ class FakeBackend:
             self.calls.append("planner")
             content = user.split("CONTENT:", 1)[1]
             if any(w in content.lower() for w in OUT_OF_SCOPE):
-                return json.dumps({"primary_topic": "", "related_topics": [], "key_terms": [], "search_queries": []})
+                return json.dumps({"in_scope": False, "concept": "", "concept_ar": "", "key_terms": [],
+                                   "search_queries": []})
             if _is_hajj(content):
-                return json.dumps({"primary_topic": "hajj", "related_topics": [], "key_terms": ["hajj", "الحج"],
-                                   "search_queries": ["hajj pilgrimage makkah", "hajj umrah difference", "الحج"]})
-            return json.dumps({"primary_topic": "zakat", "related_topics": ["sadaqah"],
-                               "key_terms": ["zakat", "zakah", "الزكاة"],
-                               "search_queries": ["zakat obligation pillar", "zakat charity", "الزكاة"]})
+                return json.dumps({"in_scope": True, "concept": "Hajj", "concept_ar": "الحج",
+                                   "key_terms": ["hajj", "pilgrimage", "الحج", "حج"],
+                                   "search_queries": ["Hajj pilgrimage to the House", "الحج إلى البيت", "حج البيت"]})
+            return json.dumps({"in_scope": True, "concept": "Zakat", "concept_ar": "الزكاة",
+                               "key_terms": ["zakat", "zakah", "الزكاة", "الزكوة"],
+                               "search_queries": ["establish prayer and give zakat", "Zakat obligatory", "وآتوا الزكاة"]})
         if "relevance grader" in system:
             self.calls.append("grader")
             n = len(re.findall(r"^\[(\d+)\] ", user, re.MULTILINE))

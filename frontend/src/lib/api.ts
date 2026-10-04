@@ -17,6 +17,7 @@ export interface RetrievedChunk {
   chunk_id: string;
   doc_id: string;
   text: string;
+  text_ar: string;
   evidence_id: string;
   relevance_score: number;
   metadata: {
@@ -79,6 +80,7 @@ export interface Evidence {
   reference_ar?: string;
   topic: string;
   supporting_text: string;
+  supporting_text_ar?: string;
   relevance_score: number;
   verified_quote?: string;
 }
@@ -144,6 +146,7 @@ export interface RetrievalDecision {
   doc_id: string;
   topic: string;
   reference: string;
+  reference_ar?: string;
   score: number;
   decision: string;
   note: string;
@@ -262,16 +265,31 @@ export interface Health {
   demo_mode: boolean;
 }
 
-export interface SourceDoc {
-  topic: string;
+export interface SourceCollection {
   id: string;
-  source_name: string;
+  name: string;
+  name_ar: string;
+  license: string;
+  attribution: string;
+  homepage: string;
+  count: number;
+}
+
+export interface SourceHit {
+  id: string;
+  topic: string;
   source_name_ar: string;
-  reference: string;
   reference_ar: string;
-  language: string;
-  review_status: string;
   text: string;
+  text_ar: string;
+  score: number;
+}
+
+export interface SourcesResponse {
+  collections: SourceCollection[];
+  total: number;
+  query: string;
+  results: SourceHit[];
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -300,7 +318,7 @@ const post = <T>(path: string, body: unknown) => request<T>(path, { method: "POS
 export const api = {
   health: () => request<Health>("/api/health"),
   demo: () => request<{ scenarios: DemoScenario[] }>("/api/demo"),
-  sources: () => request<{ topics: string[]; production_filter: string[]; documents: SourceDoc[] }>("/api/sources"),
+  sources: (q = "") => request<SourcesResponse>(`/api/sources?q=${encodeURIComponent(q)}`),
   dashboard: () => request<Dashboard>("/api/dashboard"),
   session: (id: string) => request<SessionView>(`/api/session/${id}`),
   progress: (id: string) => request<Progress>(`/api/session/${id}/progress`),

@@ -10,6 +10,7 @@ _SPACES = re.compile(r"\s+")
 
 def normalize(text: str) -> str:
     t = unicodedata.normalize("NFKC", text or "")
+    t = t.replace("ىٰ", "ى").replace("وٰ", "ا").replace("ٰ", "ا")
     t = _AR_MARKS.sub("", t)
     t = re.sub("[إأآٱ]", "ا", t).replace("ى", "ي").replace("ة", "ه")
     t = _PUNCT.sub(" ", t.lower())
@@ -84,6 +85,16 @@ def adds_restriction(claim: str, said: str) -> bool:
     c, s = f" {normalize(claim)} ", f" {normalize(said)} "
     marks = [normalize(m) for m in RESTRICTIVE]
     return any(f" {m} " in c or (" " not in m and m in c) for m in marks) and not any(f" {m} " in s for m in marks)
+
+
+OMISSION = ("دون تحديد", "دون الاشاره", "دون ذكر", "دون توضيح", "دون بيان", "دون التطرق", "لم يذكر", "لم يشر",
+            "لم يوضح", "لم يحدد", "without mentioning", "without specifying", "without stating", "does not mention",
+            "did not mention", "doesn't mention", "no mention of")
+
+
+def describes_omission(claim: str) -> bool:
+    c = f" {normalize(claim)} "
+    return any(f" {normalize(m)} " in c for m in OMISSION)
 
 
 YES_NO_STARTS = ("is ", "are ", "does ", "do ", "did ", "can ", "should ", "was ", "هل ", "أليس ", "اليس ")

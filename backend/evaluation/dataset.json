@@ -1,19 +1,21 @@
 {
-  "description": "MA'NA evaluation set. Every expectation is written before running the system. expected_concepts: keyword groups (any keyword of a group) that must appear in the intended concepts. forbidden_intended: keyword groups that must NOT appear in intended concepts (background leakage). concept_terms: words a retrieved chunk must contain to count as relevant to the exact concept. refinement_terms: keyword groups the new explanation should contain.",
+  "description": "MA'NA evaluation set. Every expectation is written before running the system. expected_concepts: keyword groups (any keyword of a group) that must appear in the intended concepts. forbidden_intended: keyword groups that must NOT appear in intended concepts (background leakage). concept_terms: words a retrieved Qur'an or hadith passage (Arabic or English translation) must contain to count as relevant to the exact concept. expected_in_scope: whether the content is about an Islamic concept covered by the Qur'an and the two Sahihs. refinement_terms: keyword groups the new explanation should contain.",
   "cases": [
     {
       "id": "hajj-correct-ar",
       "category": "correct_understanding",
       "content": "الحج رحلة يقوم بها المسلمون إلى مكة.",
       "language": "Arabic",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -41,21 +43,24 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "hajj-extra-background-ar",
       "category": "correct_understanding",
       "content": "الحج رحلة يقوم بها المسلمون إلى مكة.",
       "language": "Arabic",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -75,22 +80,24 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "zakat-no-background-en",
       "category": "omits_background_knowledge",
       "content": "Zakat is a form of charity in Islam.",
       "language": "English",
-      "expected_primary_topic": "zakat",
       "expected_topics": [
-        "zakat",
-        "sadaqah"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "zakat",
         "zakah",
-        "الزكاة"
+        "الزكاة",
+        "زكاة"
       ],
       "expected_concepts": [
         [
@@ -123,21 +130,23 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "sadaqah-correct-en",
       "category": "correct_understanding",
       "content": "Sadaqah is voluntary charity in Islam; even a smile can be sadaqah.",
       "language": "English",
-      "expected_primary_topic": "sadaqah",
       "expected_topics": [
-        "sadaqah",
-        "zakat"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
-        "sadaqah",
+        "sadaqa",
         "charity",
+        "صدقة",
         "الصدقة"
       ],
       "expected_concepts": [
@@ -164,16 +173,18 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "tawhid-correct-ar",
       "category": "correct_understanding",
       "content": "التوحيد هو إفراد الله بالعبادة.",
       "language": "Arabic",
-      "expected_primary_topic": "tawhid",
       "expected_topics": [
-        "tawhid"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "allah",
@@ -192,22 +203,27 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "fasting-correct-en",
       "category": "english_source_content",
       "content": "During Ramadan, Muslims fast from dawn until sunset.",
       "language": "English",
-      "expected_primary_topic": "fasting",
       "expected_topics": [
-        "fasting"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "fast",
         "ramadan",
         "الصيام",
-        "صيام"
+        "صيام",
+        "الصوم",
+        "صوم",
+        "رمضان"
       ],
       "expected_concepts": [
         [
@@ -232,21 +248,23 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "sadaqah-partial-en",
       "category": "partial_understanding",
       "content": "Sadaqah is voluntary charity in Islam; even a smile can be sadaqah.",
       "language": "English",
-      "expected_primary_topic": "sadaqah",
       "expected_topics": [
-        "sadaqah",
-        "zakat"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
-        "sadaqah",
+        "sadaqa",
         "charity",
+        "صدقة",
         "الصدقة"
       ],
       "expected_concepts": [
@@ -286,22 +304,27 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "fasting-partial-ar",
       "category": "partial_understanding",
       "content": "الصيام في رمضان هو الإمساك عن الطعام والشراب من طلوع الفجر إلى غروب الشمس.",
       "language": "Arabic",
-      "expected_primary_topic": "fasting",
       "expected_topics": [
-        "fasting"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "fast",
         "ramadan",
         "الصيام",
-        "صيام"
+        "صيام",
+        "الصوم",
+        "صوم",
+        "رمضان"
       ],
       "expected_concepts": [
         [
@@ -350,22 +373,24 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "zakat-partial-en",
       "category": "partial_understanding",
       "content": "Zakat is an obligatory payment that goes to specific groups such as the poor and the needy.",
       "language": "English",
-      "expected_primary_topic": "zakat",
       "expected_topics": [
-        "zakat",
-        "sadaqah"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "zakat",
         "zakah",
-        "الزكاة"
+        "الزكاة",
+        "زكاة"
       ],
       "expected_concepts": [
         [
@@ -418,22 +443,27 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "fasting-diet-en",
       "category": "wrong_understanding",
       "content": "During Ramadan, Muslims fast from dawn until sunset.",
       "language": "English",
-      "expected_primary_topic": "fasting",
       "expected_topics": [
-        "fasting"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "fast",
         "ramadan",
         "الصيام",
-        "صيام"
+        "صيام",
+        "الصوم",
+        "صوم",
+        "رمضان"
       ],
       "expected_concepts": [
         [
@@ -481,22 +511,27 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "fasting-sunnah-ar",
       "category": "wrong_understanding",
       "content": "صيام رمضان فرض على كل مسلم بالغ قادر.",
       "language": "Arabic",
-      "expected_primary_topic": "fasting",
       "expected_topics": [
-        "fasting"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "fast",
         "ramadan",
         "الصيام",
-        "صيام"
+        "صيام",
+        "الصوم",
+        "صوم",
+        "رمضان"
       ],
       "expected_concepts": [
         [
@@ -532,21 +567,24 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "hajj-umrah-ar",
       "category": "concept_confusion",
       "content": "الحج رحلة يقوم بها المسلمون إلى مكة.",
       "language": "Arabic",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -588,21 +626,23 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "sadaqah-zakat-en",
       "category": "concept_confusion",
       "content": "Sadaqah is voluntary charity in Islam.",
       "language": "English",
-      "expected_primary_topic": "sadaqah",
       "expected_topics": [
-        "sadaqah",
-        "zakat"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
-        "sadaqah",
+        "sadaqa",
         "charity",
+        "صدقة",
         "الصدقة"
       ],
       "expected_concepts": [
@@ -642,21 +682,24 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "hajj-umrah-still-confused-ar",
       "category": "before_after_no_improvement",
       "content": "الحج رحلة يقوم بها المسلمون إلى مكة.",
       "language": "Arabic",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -697,22 +740,24 @@
       ],
       "expected_resolution": [
         "remains"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "zakat-charity-en",
       "category": "ambiguous_content",
       "content": "Zakat is a form of charity in Islam.",
       "language": "English",
-      "expected_primary_topic": "zakat",
       "expected_topics": [
-        "zakat",
-        "sadaqah"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "zakat",
         "zakah",
-        "الزكاة"
+        "الزكاة",
+        "زكاة"
       ],
       "expected_concepts": [
         [
@@ -764,22 +809,24 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "zakat-sadaqa-word-ar",
       "category": "ambiguous_content",
       "content": "الزكاة صدقة يخرجها المسلم من ماله.",
       "language": "Arabic",
-      "expected_primary_topic": "zakat",
       "expected_topics": [
-        "zakat",
-        "sadaqah"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "zakat",
         "zakah",
-        "الزكاة"
+        "الزكاة",
+        "زكاة"
       ],
       "expected_concepts": [
         [
@@ -825,20 +872,23 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "allah-word-en",
       "category": "wrong_understanding",
       "content": "Allah is the Arabic word for God.",
       "language": "English",
-      "expected_primary_topic": "tawhid",
       "expected_topics": [
-        "tawhid"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "allah",
         "god",
+        "worship",
         "الله"
       ],
       "expected_concepts": [
@@ -858,6 +908,7 @@
         "major_gap",
         "partial_gap"
       ],
+      "expected_in_scope": true,
       "expected_gap_type": [
         "distorted_meaning",
         "concept_confusion",
@@ -885,14 +936,16 @@
       "category": "ambiguous_content",
       "content": "Hajj is a trip Muslims take to Makkah.",
       "language": "English",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -938,21 +991,24 @@
       "expected_resolution": [
         "resolved",
         "partially_resolved"
-      ]
+      ],
+      "expected_in_scope": true
     },
     {
       "id": "hajj-unverifiable-extra-ar",
       "category": "unsupported_claim_guard",
       "content": "الحج رحلة يقوم بها المسلمون إلى مكة.",
       "language": "Arabic",
-      "expected_primary_topic": "hajj",
       "expected_topics": [
-        "hajj"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "hajj",
         "pilgrimage",
-        "الحج"
+        "الحج",
+        "حج"
       ],
       "expected_concepts": [
         [
@@ -966,16 +1022,18 @@
       "expected_status": [
         "understood"
       ],
-      "expected_gap_type": "correct_understanding"
+      "expected_gap_type": "correct_understanding",
+      "expected_in_scope": true
     },
     {
       "id": "evasive-answer-ar",
       "category": "wrong_understanding",
       "content": "التوحيد هو إفراد الله بالعبادة.",
       "language": "Arabic",
-      "expected_primary_topic": "tawhid",
       "expected_topics": [
-        "tawhid"
+        "quran",
+        "bukhari",
+        "muslim"
       ],
       "concept_terms": [
         "allah",
@@ -994,79 +1052,137 @@
       "expected_status": [
         "major_gap"
       ],
-      "expected_gap_type": "missing_intended_meaning"
+      "expected_gap_type": "missing_intended_meaning",
+      "expected_in_scope": true
     },
     {
-      "id": "prayer-irrelevant",
-      "category": "irrelevant_rag_retrieval",
+      "id": "prayer-correct-en",
+      "category": "broader_coverage",
       "content": "Muslims pray five times a day facing the Kaaba.",
       "language": "English",
-      "expected_primary_topic": "",
-      "expected_topics": [],
-      "concept_terms": [],
-      "expected_concepts": [],
+      "expected_in_scope": true,
+      "expected_topics": [
+        "quran",
+        "bukhari",
+        "muslim"
+      ],
+      "concept_terms": [
+        "pray",
+        "prayer",
+        "salat",
+        "الصلاة",
+        "صلاة",
+        "صلوات"
+      ],
+      "expected_concepts": [
+        [
+          "خمس",
+          "five"
+        ],
+        [
+          "الكعبة",
+          "kaaba",
+          "القبلة",
+          "qibla"
+        ]
+      ],
       "forbidden_intended": [],
-      "user_response": "Muslims pray five times every day.",
+      "user_response": "Muslims pray five times every day and face the Kaaba when they pray.",
       "expected_status": [
-        "insufficient_evidence"
-      ]
+        "understood"
+      ],
+      "expected_gap_type": "correct_understanding"
     },
     {
-      "id": "pillars-prayer-irrelevant-ar",
-      "category": "irrelevant_rag_retrieval",
-      "content": "الصلاة عمود الدين، ويؤديها المسلم خمس مرات في اليوم.",
-      "language": "Arabic",
-      "expected_primary_topic": "",
-      "expected_topics": [],
-      "concept_terms": [],
-      "expected_concepts": [],
-      "forbidden_intended": [],
-      "user_response": "الصلاة أهم عبادة في اليوم.",
-      "expected_status": [
-        "insufficient_evidence"
-      ]
-    },
-    {
-      "id": "music-abstain-ar",
-      "category": "insufficient_evidence",
-      "content": "الاستماع إلى الموسيقى محرم في الإسلام عند جميع العلماء.",
-      "language": "Arabic",
-      "expected_primary_topic": "",
-      "expected_topics": [],
-      "concept_terms": [],
-      "expected_concepts": [],
-      "forbidden_intended": [],
-      "user_response": "لا يجوز للمسلم سماع أي نوع من الموسيقى.",
-      "expected_status": [
-        "insufficient_evidence"
-      ]
-    },
-    {
-      "id": "inheritance-abstain-en",
-      "category": "correct_abstention",
+      "id": "inheritance-correct-en",
+      "category": "broader_coverage",
       "content": "In Islamic inheritance, a son receives twice the share of a daughter.",
       "language": "English",
-      "expected_primary_topic": "",
+      "expected_in_scope": true,
+      "expected_topics": [
+        "quran",
+        "bukhari",
+        "muslim"
+      ],
+      "concept_terms": [
+        "inherit",
+        "share",
+        "daughter",
+        "ميراث",
+        "حظ",
+        "الأنثيين"
+      ],
+      "expected_concepts": [
+        [
+          "ضعف",
+          "twice",
+          "مثل حظ",
+          "double"
+        ]
+      ],
+      "forbidden_intended": [],
+      "user_response": "A son gets double what a daughter gets in inheritance.",
+      "expected_status": [
+        "understood"
+      ],
+      "expected_gap_type": "correct_understanding"
+    },
+    {
+      "id": "makkah-geography-ar",
+      "category": "irrelevant_rag_retrieval",
+      "content": "تقع مكة المكرمة في غرب المملكة العربية السعودية ويبلغ عدد سكانها نحو مليوني نسمة.",
+      "language": "Arabic",
+      "expected_in_scope": false,
       "expected_topics": [],
       "concept_terms": [],
       "expected_concepts": [],
       "forbidden_intended": [],
-      "user_response": "Sons get double what daughters get.",
+      "user_response": "مكة مدينة كبيرة في غرب السعودية.",
       "expected_status": [
         "insufficient_evidence"
       ]
     },
     {
-      "id": "halal-food-abstain-en",
-      "category": "correct_abstention",
-      "content": "Muslims only eat halal meat.",
+      "id": "ramadan-retail-en",
+      "category": "irrelevant_rag_retrieval",
+      "content": "Supermarket sales usually rise during the month of Ramadan.",
       "language": "English",
-      "expected_primary_topic": "",
+      "expected_in_scope": false,
       "expected_topics": [],
       "concept_terms": [],
       "expected_concepts": [],
       "forbidden_intended": [],
-      "user_response": "Muslims can only eat meat that is halal.",
+      "user_response": "Shops sell more in Ramadan.",
+      "expected_status": [
+        "insufficient_evidence"
+      ]
+    },
+    {
+      "id": "programming-abstain-en",
+      "category": "correct_abstention",
+      "content": "Python is a popular programming language for data science.",
+      "language": "English",
+      "expected_in_scope": false,
+      "expected_topics": [],
+      "concept_terms": [],
+      "expected_concepts": [],
+      "forbidden_intended": [],
+      "user_response": "Python is used for data science.",
+      "expected_status": [
+        "insufficient_evidence"
+      ]
+    },
+    {
+      "id": "riyadh-abstain-ar",
+      "category": "correct_abstention",
+      "content": "الرياض هي عاصمة المملكة العربية السعودية.",
+      "language": "Arabic",
+      "expected_in_scope": false,
+      "expected_topics": [],
+      "concept_terms": [],
+      "expected_concepts": [],
+      "forbidden_intended": [],
+      "user_response": "عاصمة السعودية هي الرياض.",
       "expected_status": [
         "insufficient_evidence"
       ]
