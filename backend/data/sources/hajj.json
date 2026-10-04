@@ -1,0 +1,46 @@
+{
+  "topic": "hajj",
+  "description": "Hajj: the pilgrimage to Makkah, its obligation for those able, once in a lifetime, its time and months, how it differs from Umrah.",
+  "documents": [
+    {
+      "id": "hajj-obligation-ability",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 3:97",
+      "reference_ar": "سورة آل عمران: 97",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Hajj, the pilgrimage to the Sacred House (the Ka'bah) in Makkah, is one of the five pillars of Islam (Sahih al-Bukhari 8). It is obligatory only on those who are able: \"And [due] to Allah from the people is a pilgrimage to the House - for whoever is able to find thereto a way.\" (3:97). Ability includes physical health and financial means. Those who are unable are not obligated."
+    },
+    {
+      "id": "hajj-once-in-lifetime",
+      "source_name": "Sahih Muslim",
+      "source_name_ar": "صحيح مسلم",
+      "reference": "Sahih Muslim 1337",
+      "reference_ar": "صحيح مسلم 1337",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Hajj is obligatory once in a lifetime. When the Prophet (peace be upon him) announced that Hajj had been made obligatory, a man asked whether it was every year. The Prophet explained that had he said yes, it would have become obligatory every year and people would not have been able to do it. Performing it more than once is voluntary."
+    },
+    {
+      "id": "hajj-time-umrah",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 2:196; 2:197",
+      "reference_ar": "سورة البقرة: 196؛ سورة البقرة: 197",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Hajj takes place at a specific time, in the month of Dhul-Hijjah: \"Hajj is [during] well-known months.\" (2:197). Umrah is a different, shorter pilgrimage that can be performed at any time of the year; it is not the same as Hajj. The Qur'an mentions both: \"And complete the Hajj and 'umrah for Allah.\" (2:196)."
+    },
+    {
+      "id": "hajj-meaning",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 22:27; 2:197",
+      "reference_ar": "سورة الحج: 27؛ سورة البقرة: 197",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Hajj is an act of worship devoted to Allah alone, recalling the legacy of Prophet Ibrahim (Abraham). \"And proclaim to the people the Hajj; they will come to you on foot and on every lean camel.\" (22:27). Pilgrims enter a state of ihram and are told: \"there is [to be for him] no sexual relations and no disobedience and no disputing during Hajj.\" (2:197). It is not tourism or a cultural trip, but worship with defined rites."
+    }
+  ]
+}

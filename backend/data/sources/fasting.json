@@ -1,0 +1,56 @@
+{
+  "topic": "fasting",
+  "description": "Fasting (sawm) in Ramadan: its obligation, from dawn to sunset, exemptions, its spiritual purpose, voluntary fasts.",
+  "documents": [
+    {
+      "id": "fasting-obligation",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 2:183; 2:185",
+      "reference_ar": "سورة البقرة: 183؛ سورة البقرة: 185",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Fasting the month of Ramadan (sawm) is obligatory for adult, sane, able Muslims and is one of the five pillars of Islam (Sahih al-Bukhari 8). The Qur'an says: \"O you who have believed, decreed upon you is fasting as it was decreed upon those before you that you may become righteous.\" (2:183). \"So whoever sights [the new moon of] the month, let him fast it.\" (2:185). The stated purpose is taqwa: God-consciousness and righteousness."
+    },
+    {
+      "id": "fasting-what-and-when",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 2:187",
+      "reference_ar": "سورة البقرة: 187",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "The fast lasts from dawn (fajr) until sunset. During the fasting hours a Muslim abstains from food, drink and marital intimacy. The Qur'an says: \"And eat and drink until the white thread of dawn becomes distinct to you from the black thread [of night]. Then complete the fast until the sunset.\" (2:187). Eating and drinking are permitted at night."
+    },
+    {
+      "id": "fasting-exemptions",
+      "source_name": "The Qur'an (Sahih International translation)",
+      "source_name_ar": "القرآن الكريم (ترجمة صحيح إنترناشونال للمعاني)",
+      "reference": "Qur'an 2:184; 2:185",
+      "reference_ar": "سورة البقرة: 184؛ سورة البقرة: 185",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Islam provides exemptions. Those who are ill or travelling may break the fast and make up the missed days later: \"So whoever among you is ill or on a journey [during them] - then an equal number of other days.\" (2:184). \"Allah intends for you ease and does not intend for you hardship.\" (2:185). Fasting is not meant to cause harm."
+    },
+    {
+      "id": "fasting-beyond-food",
+      "source_name": "Sahih al-Bukhari",
+      "source_name_ar": "صحيح البخاري",
+      "reference": "Sahih al-Bukhari 1903",
+      "reference_ar": "صحيح البخاري 1903",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Fasting is not only abstaining from food. The Prophet (peace be upon him) said: \"Whoever does not give up false speech and acting upon it, Allah has no need of his giving up his food and drink.\" Fasting includes restraining one's speech and behaviour; it is a spiritual discipline, not a diet."
+    },
+    {
+      "id": "fasting-voluntary",
+      "source_name": "Sahih Muslim; Jami' at-Tirmidhi",
+      "source_name_ar": "صحيح مسلم؛ جامع الترمذي",
+      "reference": "Sahih Muslim 1162; Jami' at-Tirmidhi 747",
+      "reference_ar": "صحيح مسلم 1162؛ جامع الترمذي 747",
+      "language": "en",
+      "review_status": "reviewed",
+      "text": "Besides the obligatory Ramadan fast there are voluntary (sunnah) fasts, such as fasting on Mondays and Thursdays and fasting the Day of Arafah for those not performing Hajj. These voluntary fasts are recommended but not obligatory, unlike the fast of Ramadan."
+    }
+  ]
+}

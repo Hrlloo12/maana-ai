@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%230c1a3a' stroke-opacity='0.045' stroke-width='1'%3E%3Crect x='24' y='24' width='40' height='40'/%3E%3Crect x='24' y='24' width='40' height='40' transform='rotate(45 44 44)'/%3E%3Cpath d='M0 0L16 16M88 0L72 16M0 88L16 72M88 88L72 72'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-gold: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23dcc18a' stroke-opacity='0.16' stroke-width='1'%3E%3Crect x='17' y='17' width='30' height='30'/%3E%3Crect x='17' y='17' width='30' height='30' transform='rotate(45 32 32)'/%3E%3Ccircle cx='32' cy='32' r='6'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-sand-50 font-sans text-navy-900 antialiased;
+  background-image: var(--pattern);
+  min-height: 100vh;
+}
+
+html[lang="en"] body {
+  @apply font-latin;
+}
+
+@layer components {
+  .card {
+    @apply rounded-3xl border border-sand-200 bg-white/90 p-6 shadow-soft sm:p-8;
+  }
+  .card-quiet {
+    @apply rounded-2xl border border-sand-200 bg-sand-50/80 p-5;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold tracking-wide text-gold-600;
+  }
+  html[lang="en"] .eyebrow {
+    @apply uppercase tracking-[0.14em];
+  }
+  .label {
+    @apply text-sm font-semibold text-navy-700;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition duration-200 focus:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-navy-900 text-sand-50 shadow-soft hover:bg-navy-800 focus-visible:ring-navy-300/50;
+  }
+  .btn-accent {
+    @apply btn bg-emerald-600 text-white shadow-soft hover:bg-emerald-700 focus-visible:ring-emerald-200;
+  }
+  .btn-ghost {
+    @apply btn border border-sand-300 bg-white/70 text-navy-800 hover:border-navy-300 hover:bg-white focus-visible:ring-sand-200;
+  }
+  .btn-link {
+    @apply inline-flex items-center gap-1 text-sm font-semibold text-emerald-700 underline-offset-4 hover:underline;
+  }
+  .input {
+    @apply w-full rounded-2xl border border-sand-300 bg-white px-4 py-3 text-base text-navy-900 placeholder:text-navy-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-100;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium;
+  }
+  .ornament {
+    @apply flex items-center gap-3 text-gold-500;
+  }
+  .ornament::before,
+  .ornament::after {
+    content: "";
+    @apply h-px flex-1 bg-gradient-to-r from-transparent via-gold-300 to-transparent;
+  }
+  .arch {
+    border-radius: 999px 999px 1.75rem 1.75rem;
+  }
+  .pattern-gold {
+    background-image: var(--pattern-gold);
+  }
+}
+
+[dir="rtl"] p,
+[dir="rtl"] li,
+p[dir="rtl"] {
+  line-height: 1.9;
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.intro-anim * {
+  transform-box: fill-box;
+}
+.intro-breathe {
+  transform-origin: center bottom;
+  animation: intro-breathe 5s ease-in-out infinite;
+}
+.intro-head {
+  transform-origin: 50% 80%;
+}
+.is-speaking .intro-head {
+  animation: intro-nod 3.2s ease-in-out infinite;
+}
+.intro-blink {
+  transform-origin: center;
+  animation: intro-blink 4.6s infinite;
+}
+.intro-mouth {
+  transform-origin: center;
+  transform: scaleY(0);
+}
+.is-speaking .intro-mouth {
+  animation: intro-talk 0.36s ease-in-out infinite alternate;
+}
+.intro-sway {
+  transform-box: view-box;
+  animation: intro-sway 6s ease-in-out infinite;
+}
+.intro-glow {
+  animation: intro-glow 3.5s ease-in-out infinite;
+}
+@keyframes intro-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@keyframes intro-nod {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-1.2deg); }
+  70% { transform: rotate(1deg); }
+}
+@keyframes intro-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+@keyframes intro-talk {
+  0% { transform: scaleY(0.15); }
+  45% { transform: scaleY(0.85); }
+  100% { transform: scaleY(0.4); }
+}
+@keyframes intro-sway {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50% { transform: rotate(1.5deg); }
+}
+@keyframes intro-glow {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-breathe,
+  .is-speaking .intro-head,
+  .intro-blink,
+  .intro-sway,
+  .intro-glow {
+    animation: none;
+  }
+  .is-speaking .intro-mouth {
+    animation: none;
+    transform: scaleY(0.5);
+  }
+}
