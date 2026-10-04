@@ -79,7 +79,6 @@ def health():
         "vector_index_ready": (settings.index_dir / "faiss.index").exists(),
         "app_env": settings.app_env,
         "review_filter": sorted(settings.allowed_review_statuses),
-        "demo_mode": settings.demo_mode,
     }
 
 
@@ -131,7 +130,7 @@ def get_dashboard():
 
 
 @router.get("/sources")
-def get_sources(q: str = "", limit: int = 12):
+def get_sources():
     retriever = get_retriever()
     counts: dict[str, int] = {}
     for c in retriever.chunks:
@@ -141,21 +140,42 @@ def get_sources(q: str = "", limit: int = 12):
          "homepage": c.homepage, "count": counts.get(c.id, 0)}
         for c in load_collections()
     ]
-    results = []
-    if q.strip():
-        for c in retriever.search([q.strip()], limit=max(1, min(limit, 30))):
-            results.append({
-                "id": c.chunk_id, "topic": c.metadata.topic, "source_name": c.metadata.source_name,
-                "source_name_ar": c.metadata.source_name_ar, "reference": c.metadata.reference,
-                "reference_ar": c.metadata.reference_ar, "text": c.text, "text_ar": c.text_ar,
-                "score": c.relevance_score,
-            })
-    return {"collections": collections, "total": len(retriever.chunks), "query": q.strip(), "results": results}
+    return {"collections": collections, "total": len(retriever.chunks)}
 
 
-@router.get("/demo")
-def get_demo():
-    if not settings.demo_mode:
-        raise HTTPException(status_code=404, detail="وضع الأمثلة غير مفعّل.")
-    path = settings.corpus_file.parent / "demo_inputs.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+
+@router.get("/evaluation")
+def get_evaluation():
+    folder = settings.corpus_file.parent.parent / "evaluation"
+    results_path = folder / "results" / "latest.json"
+    if not results_path.exists():
+        raise HTTPException(status_code=404, detail="لم يُشغَّل التقييم بعد.")
+    results = json.loads(results_path.read_text(encoding="utf-8"))
+    dataset = {c["id"]: c for c in json.loads((folder / "dataset.json").read_text(encoding="utf-8"))["cases"]}
+    cases = []
+    for row in results.get("cases", []):
+        case = dataset.get(row["id"], {})
+        cases.append({
+            "id": row["id"],
+            "category": row.get("category", case.get("category", "")),
+            "content": case.get("content", ""),
+            "language": case.get("language", ""),
+            "user_response": case.get("user_response", ""),
+            "expected_status": row.get("expected_status") or case.get("expected_status", []),
+            "status": row.get("status"),
+            "status_ok": row.get("status_ok", False),
+            "gap_type": row.get("gap_type"),
+            "root_cause": row.get("root_cause"),
+            "strategy": row.get("strategy"),
+            "before": row.get("before"),
+            "after": row.get("after"),
+            "resolution": row.get("resolution"),
+            "error": row.get("error"),
+        })
+    return {
+        "generated_at": results.get("generated_at"),
+        "mode": results.get("mode"),
+        "metrics": results.get("metrics", {}),
+        "categories": results.get("categories", {}),
+        "cases": cases,
+    }

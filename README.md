@@ -62,11 +62,11 @@ The Refinement Agent diagnoses **why** the misunderstanding happened and chooses
 | Root cause | Allowed strategies |
 |---|---|
 | concept_confusion (e.g. Hajj = Umrah) | comparison |
-| ambiguous_wording (e.g. «صدقة» read as optional) | simplification, comparison, example |
-| abstract_concept | example, visual, simplification |
-| missing_context | simplification, example, step_by_step |
+| ambiguous_wording (e.g. «صدقة» read as optional) | comparison, example |
+| abstract_concept | example, visual |
+| missing_context | example, step_by_step, simplification (only when nothing else adds anything) |
 | complex_process | step_by_step, visual |
-| overgeneralization | example, comparison, simplification |
+| overgeneralization | example, comparison |
 
 The reader is then re-tested with **the same neutral question** as the first time, so before and after are directly comparable and the question cannot leak the answer. The re-test is scored against the same intended concepts and evidence; each earlier misunderstanding is marked *resolved*, *partially resolved* or *remains*, and newly missing meanings are reported as remaining gaps.
 
@@ -113,23 +113,24 @@ python -m evaluation.evaluator --retrieval-only   # dense retrieval only, no API
 | Intended Concept Extraction | 100% |
 | Background leakage into intended meaning | 0% |
 | Meaning Gap Detection Accuracy (status) | 100% (26/26) |
-| Gap Type Accuracy | 95.5% |
+| Gap Type Accuracy | 90.9% |
 | RAG scope gate accuracy | 100% |
 | RAG Relevance (kept passages that are about the exact concept) | 100% |
 | Irrelevant retrieval rejected (out-of-scope content) | 100% |
-| Citation Correctness (96 citations re-verified) | 100% |
+| Citation Correctness (97 citations re-verified) | 100% |
 | Unsupported Claim Rate (74 claims re-verified) | 0% |
 | Abstention Accuracy / precision / recall | 100% / 100% / 100% |
 | Refinement: strategy fits the cause | 100% |
 | Refinement Relevance | 100% |
 | Before/After: misunderstanding resolved or partially resolved (incl. a still-confused reader correctly reported as "remains") | 100% |
-| Mean alignment before → after (12 re-tested cases) | 8.3% → 91.7% (+83 points) |
-| Agent outputs valid on first attempt / after correction | 96.1% / 99.0% |
+| Mean alignment before → after (12 re-tested cases) | 12.5% → 91.7% (+79 points) |
+| Agent outputs valid on first attempt / after correction | 93.1% / 98.0% |
 
 Notes on this run, for transparency:
 
-- The `allah-word-en` case was run on its own after the full run and merged into the results. In the full run it abstained, because retrieval for "Allah is the Arabic word for God" is not stable on this corpus (one run found Qur'an evidence such as 29:46, the other did not). Its expectation was not changed.
-- The one gap-type miss is `zakat-sadaqa-word-ar`, judged "distorted meaning" where "ambiguity triggered by the wording" was expected.
+- Retrieval for `allah-word-en` ("Allah is the Arabic word for God") is not fully stable on this corpus: in this run it found Qur'an evidence, while an earlier run abstained.
+- The two gap-type misses are `zakat-sadaqa-word-ar` (judged "distorted meaning" where "ambiguity triggered by the wording" was expected) and `fasting-diet-en` (judged "missing intended meaning" where "distorted meaning" was expected); both statuses were correct.
+- Explanation strategies chosen in this run: comparison 8, example 2, step by step 2.
 - The model is non-deterministic, so repeated runs can differ slightly.
 
 Running the evaluator writes per-case output to `evaluation/results/latest.json` and a summary to `evaluation/results/latest.md`.

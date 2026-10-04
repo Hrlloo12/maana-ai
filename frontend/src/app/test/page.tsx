@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import JourneySteps from "@/components/JourneySteps";
 import { ErrorBox, Loading, MissingSession, PageHeader, StarMark } from "@/components/ui";
-import { api, DemoScenario } from "@/lib/api";
+import { api } from "@/lib/api";
 import { useAgentRun, useSession } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 
@@ -15,15 +15,10 @@ function TestView() {
   const { session, error } = useSession(id);
   const { run, running, progress, error: runError } = useAgentRun();
   const [answer, setAnswer] = useState("");
-  const [sample, setSample] = useState<DemoScenario | null>(null);
 
   useEffect(() => {
     if (!session) return;
     if (session.stage !== "awaiting_response") router.replace(`/result/?id=${id}`);
-    api
-      .demo()
-      .then((d) => setSample(d.scenarios.find((s) => s.content === session.original_content) ?? null))
-      .catch(() => {});
   }, [session, id, router]);
 
   if (!id) return <MissingSession />;
@@ -64,11 +59,6 @@ function TestView() {
           onChange={(e) => setAnswer(e.target.value)}
           aria-label={t.test.question}
         />
-        {sample && (
-          <button className="btn-link" onClick={() => setAnswer(sample.first_response)}>
-            {t.test.sample}
-          </button>
-        )}
         <ErrorBox message={runError} />
         <button className="btn-primary w-full py-4 text-base" disabled={running || answer.trim().length < 2} onClick={submit}>
           {running ? t.test.running : t.test.cta}

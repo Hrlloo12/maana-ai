@@ -66,7 +66,8 @@ def test_zakat_ambiguity_triggered_refine_and_retest(workflow, fake_llm):
 
     state = workflow.refine(sid)
     assert workflow.stage(sid) == "awaiting_retest"
-    assert state["refinement"]["strategy"] == "simplification"
+    assert state["refinement"]["strategy"] == "comparison"
+    assert not state["refinement"]["strategy_adjusted"]
     assert state["refinement"]["evidence_quotes"]
     assert state["follow_up_question"] == state["understanding_question"]
 

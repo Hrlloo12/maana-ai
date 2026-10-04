@@ -45,7 +45,6 @@ class Settings:
     model_cache_dir: Path = BASE_DIR / "data" / "model_cache"
 
     app_env: str = os.getenv("APP_ENV", "development").strip().lower()
-    demo_mode: bool = _bool("DEMO_MODE", True)
     database_url: str = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'data' / 'maana.db'}")
     checkpoint_db: Path = BASE_DIR / "data" / "checkpoints.db"
     cors_origins: list[str] = field(

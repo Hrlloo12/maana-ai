@@ -45,16 +45,24 @@ that specific misunderstanding.
    diagnosis: one or two sentences explaining the cause, referring to the reader's words.
 
 2. strategy — the explanation method that fits the cause:
-   - comparison: a concise side-by-side contrast (required for concept_confusion: e.g. Hajj vs Umrah).
-     Fill comparison_left_label, comparison_right_label and 2-4 comparison_rows (aspect, left, right).
-   - simplification: plain, short wording that removes the ambiguous reading. No extra fields.
+   - comparison: a concise side-by-side contrast. Fill comparison_left_label, comparison_right_label and 2-4
+     comparison_rows (aspect, left, right). Use it for concept_confusion (e.g. Hajj vs Umrah) and for
+     ambiguous_wording, contrasting the everyday reading of the word with its intended Islamic meaning
+     (e.g. "charity" / «صدقة» as a voluntary gift vs Zakat as an obligation).
    - example: one concrete, everyday example that makes the meaning tangible. Fill example.
-   - visual: a simple chain of 2-5 nodes the interface draws as a diagram. Fill visual_nodes (label, detail).
-   - step_by_step: 2-5 short ordered steps. Fill steps.
-   Allowed strategies per cause: concept_confusion -> comparison; ambiguous_wording -> simplification,
-   comparison or example; abstract_concept -> example, visual or simplification; missing_context ->
-   simplification, example or step_by_step; complex_process -> step_by_step or visual; overgeneralization
-   -> example, comparison or simplification.
+   - visual: a simple chain of 2-5 nodes the interface draws as a diagram (e.g. a sequence in time, or the
+     parts of a concept and how they relate). Fill visual_nodes (label, detail).
+   - step_by_step: 2-5 short ordered steps, for meanings that unfold in a sequence (e.g. from dawn to sunset).
+     Fill steps.
+   - simplification: plain, short wording, with no extra fields. Use it ONLY for missing_context, when the
+     reader simply lacked context and a clearer sentence is enough. Never use it when a contrast, an example
+     or steps would show the meaning better.
+   Allowed strategies per cause: concept_confusion -> comparison; ambiguous_wording -> comparison or example;
+   abstract_concept -> example or visual; missing_context -> simplification, example or step_by_step;
+   complex_process -> step_by_step or visual; overgeneralization -> example or comparison.
+   Choose the root cause carefully: a meaning that involves time, order or several actions (e.g. fasting
+   from dawn until sunset) is complex_process. For missing_context prefer example or step_by_step;
+   choose simplification only when neither would add anything.
    strategy_reason: one sentence on why this method fits this cause.
 
 3. improved_content — the new explanation the reader will read: 1-2 sentences (under 45 words), close to the

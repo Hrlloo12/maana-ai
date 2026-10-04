@@ -32,11 +32,10 @@ def test_api_end_to_end(workflow):
         assert dash["content_sessions"] >= 1
         assert dash["meaning_gaps_resolved"] >= 1
         assert dash["recent_sessions"][0]["session_id"]
-        sources = client.get("/api/sources", params={"q": "الزكاة"}).json()
+        sources = client.get("/api/sources").json()
         assert {c["id"] for c in sources["collections"]} == {"quran", "bukhari", "muslim"}
         assert sources["total"] > 20000
-        assert sources["results"] and all(r["reference_ar"] for r in sources["results"])
-        assert client.get("/api/demo").json()["scenarios"]
+        assert client.get("/api/demo").status_code == 404
 
 
 def test_api_errors_are_arabic(workflow):
@@ -47,3 +46,10 @@ def test_api_errors_are_arabic(workflow):
         assert r.status_code == 422 and "المدخلات" in r.json()["detail"]
         r = client.post("/api/understanding/analyze", json={"session_id": "nope", "response": "نص"})
         assert r.status_code == 404
+
+
+def test_evaluation_endpoint(workflow):
+    with TestClient(app) as client:
+        data = client.get("/api/evaluation").json()
+        assert data["metrics"]["n_cases"] == len(data["cases"])
+        assert all(c["content"] for c in data["cases"])

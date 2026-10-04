@@ -22,8 +22,6 @@ services:
         value: local
       - key: APP_ENV
         value: production
-      - key: DEMO_MODE
-        value: "true"
       - key: CORS_ORIGINS
         value: "*"
       - key: HF_HUB_DISABLE_SYMLINKS_WARNING

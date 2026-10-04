@@ -13,9 +13,9 @@ export default function Nav() {
 
   const links = [
     { href: "/", label: t.nav.home, match: (p: string) => p === "/" },
-    { href: "/analyze/", label: t.nav.test, match: (p: string) => ["/analyze", "/test"].some((x) => p.startsWith(x)) },
-    { href: "/results/", label: t.nav.results, match: (p: string) => ["/results", "/result"].some((x) => p.startsWith(x)) },
+    { href: "/analyze/", label: t.nav.test, match: (p: string) => ["/analyze", "/test", "/result"].some((x) => p.startsWith(x)) },
     { href: "/dashboard/", label: t.nav.dashboard, match: (p: string) => p.startsWith("/dashboard") },
+    { href: "/evaluation/", label: t.nav.evaluation, match: (p: string) => p.startsWith("/evaluation") },
     { href: "/about/", label: t.nav.about, match: (p: string) => ["/about", "/technology", "/sources"].some((x) => p.startsWith(x)) },
   ];
 

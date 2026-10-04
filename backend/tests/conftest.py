@@ -168,7 +168,10 @@ class FakeBackend:
                         "comparison_rows": [{"aspect": "الوقت", "left": "أشهر معلومات", "right": "طوال العام"},
                                             {"aspect": "الحكم", "left": "ركن", "right": "عبادة مستقلة"}]}
             else:
-                body = {"root_cause": "ambiguous_wording", "strategy": "simplification"}
+                body = {"root_cause": "ambiguous_wording", "strategy": "comparison",
+                        "comparison_left_label": "الصدقة", "comparison_right_label": "الزكاة",
+                        "comparison_rows": [{"aspect": "الحكم", "left": "تطوع", "right": "فريضة"},
+                                            {"aspect": "الوقت", "left": "أي وقت", "right": "عند بلوغ النصاب"}]}
             return json.dumps({
                 **body,
                 "diagnosis": "تشخيص اختبار", "strategy_reason": "سبب اختبار",

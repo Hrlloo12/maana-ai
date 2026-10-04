@@ -21,8 +21,8 @@ const GAP_TYPES = [
 
 const STRATEGY_CAUSES: Record<string, string[]> = {
   comparison: ["concept_confusion", "ambiguous_wording", "overgeneralization"],
-  simplification: ["ambiguous_wording", "abstract_concept", "missing_context", "overgeneralization"],
   example: ["ambiguous_wording", "abstract_concept", "missing_context", "overgeneralization"],
+  simplification: ["missing_context"],
   visual: ["abstract_concept", "complex_process"],
   step_by_step: ["missing_context", "complex_process"],
 };

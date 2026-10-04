@@ -20,7 +20,7 @@ import {
   StarMark,
   StatusPill,
 } from "@/components/ui";
-import { api, ConceptResult, DemoScenario, Resolution, SessionView } from "@/lib/api";
+import { api, ConceptResult, Resolution, SessionView } from "@/lib/api";
 import { useAgentRun, useSession } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 
@@ -31,15 +31,9 @@ function ResultView() {
   const { session, setSession, error } = useSession(id);
   const { run, running, progress, error: runError } = useAgentRun();
   const [answer, setAnswer] = useState("");
-  const [sample, setSample] = useState<DemoScenario | null>(null);
 
   useEffect(() => {
     if (session?.stage === "awaiting_response") router.replace(`/test/?id=${id}`);
-    if (!session) return;
-    api
-      .demo()
-      .then((d) => setSample(d.scenarios.find((s) => s.content === session.original_content) ?? null))
-      .catch(() => setSample(null));
   }, [session, id, router]);
 
   if (!id) return <MissingSession />;
@@ -276,11 +270,6 @@ function ResultView() {
                 onChange={(e) => setAnswer(e.target.value)}
                 aria-label={t.result.retest}
               />
-              {sample?.retest_response && (
-                <button className="btn-link" onClick={() => setAnswer(sample.retest_response)}>
-                  {t.result.sampleRetest}
-                </button>
-              )}
               <ErrorBox message={runError} />
               <button className="btn-primary w-full py-4" disabled={running || answer.trim().length < 2} onClick={retest}>
                 {running ? t.result.retesting : t.result.retestCta}

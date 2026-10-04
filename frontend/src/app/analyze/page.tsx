@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import JourneySteps from "@/components/JourneySteps";
 import { ErrorBox, PageHeader } from "@/components/ui";
-import { api, DemoScenario, Health, newSessionId } from "@/lib/api";
+import { api, Health, newSessionId } from "@/lib/api";
 import { useAgentRun } from "@/lib/hooks";
 import { useI18n } from "@/lib/i18n";
 
@@ -16,16 +16,11 @@ export default function AnalyzePage() {
   const [content, setContent] = useState("");
   const [contentLang, setContentLang] = useState("Arabic");
   const [targetLang, setTargetLang] = useState("Arabic");
-  const [demo, setDemo] = useState<DemoScenario[]>([]);
   const [health, setHealth] = useState<Health | null>(null);
   const { run, running, progress, error } = useAgentRun();
 
   useEffect(() => {
     api.health().then(setHealth).catch(() => setHealth(null));
-    api
-      .demo()
-      .then((d) => setDemo(d.scenarios))
-      .catch(() => setDemo([]));
   }, []);
 
   async function analyze() {
@@ -67,28 +62,6 @@ export default function AnalyzePage() {
           <LangSelect id="clang" label={t.analyze.contentLang} value={contentLang} onChange={setContentLang} />
           <LangSelect id="tlang" label={t.analyze.targetLang} value={targetLang} onChange={setTargetLang} />
         </div>
-
-        {demo.length > 0 && (
-          <div>
-            <p className="mb-2 text-sm text-navy-500">{t.analyze.examples}</p>
-            <div className="flex flex-wrap gap-2">
-              {demo.map((d) => (
-                <button
-                  key={d.id}
-                  className="chip border-sand-300 bg-sand-50 px-3 py-1.5 text-sm text-navy-700 hover:border-emerald-500 hover:text-emerald-700"
-                  onClick={() => {
-                    setContent(d.content);
-                    setContentLang(d.content_language);
-                    setTargetLang(d.target_language);
-                  }}
-                  dir="auto"
-                >
-                  {d.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         <ErrorBox message={error} />
         {content.trim().length > 0 && content.trim().length < 5 && <p className="text-sm text-amber-700">{t.analyze.tooShort}</p>}

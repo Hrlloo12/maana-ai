@@ -217,16 +217,6 @@ export interface Progress {
   error: string | null;
 }
 
-export interface DemoScenario {
-  id: string;
-  title: string;
-  content: string;
-  content_language: string;
-  target_language: string;
-  first_response: string;
-  retest_response: string;
-}
-
 export interface Dashboard {
   content_sessions: number;
   sessions_with_gaps: number;
@@ -238,20 +228,33 @@ export interface Dashboard {
   most_misunderstood_concepts: { concept: string; count: number }[];
   gaps_by_topic: { topic: string; count: number }[];
   explanation_strategies: { strategy: string; count: number }[];
-  recent_sessions: RecentSession[];
   before_after: { session_id: string; topic: string | null; before: number; after: number; created_at: string }[];
 }
 
-export interface RecentSession {
-  session_id: string;
+export interface EvaluationCase {
+  id: string;
+  category: string;
   content: string;
-  topic: string | null;
-  stage: Stage;
-  status_before: GapStatus | null;
-  status_after: GapStatus | null;
+  language: string;
+  user_response: string;
+  expected_status: string[];
+  status: string | null;
+  status_ok: boolean;
+  gap_type: string | null;
+  root_cause: string | null;
+  strategy: string | null;
   before: number | null;
   after: number | null;
-  created_at: string;
+  resolution: Resolution | null;
+  error: string | null;
+}
+
+export interface Evaluation {
+  generated_at: string;
+  mode: string;
+  metrics: Record<string, number | null>;
+  categories: Record<string, { n: number; status_accuracy: number | null }>;
+  cases: EvaluationCase[];
 }
 
 export interface Health {
@@ -262,7 +265,6 @@ export interface Health {
   vector_index_ready: boolean;
   app_env: string;
   review_filter: string[];
-  demo_mode: boolean;
 }
 
 export interface SourceCollection {
@@ -275,21 +277,9 @@ export interface SourceCollection {
   count: number;
 }
 
-export interface SourceHit {
-  id: string;
-  topic: string;
-  source_name_ar: string;
-  reference_ar: string;
-  text: string;
-  text_ar: string;
-  score: number;
-}
-
 export interface SourcesResponse {
   collections: SourceCollection[];
   total: number;
-  query: string;
-  results: SourceHit[];
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -317,9 +307,9 @@ const post = <T>(path: string, body: unknown) => request<T>(path, { method: "POS
 
 export const api = {
   health: () => request<Health>("/api/health"),
-  demo: () => request<{ scenarios: DemoScenario[] }>("/api/demo"),
-  sources: (q = "") => request<SourcesResponse>(`/api/sources?q=${encodeURIComponent(q)}`),
+  sources: () => request<SourcesResponse>("/api/sources"),
   dashboard: () => request<Dashboard>("/api/dashboard"),
+  evaluation: () => request<Evaluation>("/api/evaluation"),
   session: (id: string) => request<SessionView>(`/api/session/${id}`),
   progress: (id: string) => request<Progress>(`/api/session/${id}/progress`),
   analyzeContent: (body: { session_id: string; content: string; content_language: string; target_language: string }) =>

@@ -28,11 +28,11 @@ Strategy = Literal["simplification", "comparison", "example", "visual", "step_by
 
 STRATEGY_FIT: dict[str, list[str]] = {
     "concept_confusion": ["comparison"],
-    "ambiguous_wording": ["simplification", "comparison", "example"],
-    "abstract_concept": ["example", "visual", "simplification"],
-    "missing_context": ["simplification", "example", "step_by_step"],
+    "ambiguous_wording": ["comparison", "example"],
+    "abstract_concept": ["example", "visual"],
+    "missing_context": ["example", "step_by_step", "simplification"],
     "complex_process": ["step_by_step", "visual"],
-    "overgeneralization": ["example", "comparison", "simplification"],
+    "overgeneralization": ["example", "comparison"],
 }
 
 
