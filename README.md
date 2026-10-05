@@ -9,7 +9,44 @@ MA'NA measures the gap between **the meaning Islamic content intends** and **wha
        → تحديد سبب الالتباس → اختيار أفضل طريقة للشرح → إعادة الشرح → إعادة الاختبار → قياس التحسن
 ```
 
-> **ملاحظة للمحكّمين:** يعمل النظام بنموذج لغوي حقيقي، لذلك يحتاج مفتاح API خاصًا بكم. انسخوا `backend/.env.example` إلى `backend/.env` وضعوا المفتاح في `LLM_API_KEY`. لا توجد أي مفاتيح داخل المستودع. واجهة الموقع عربية بالكامل ومن اليمين إلى اليسار.
+## تشغيل المشروع بسرعة (للفريق والمحكّمين)
+
+> **مهم: النظام يستخدم واجهة برمجة (API) لنموذج لغوي خارجي.** التحليل والتشخيص وكتابة الشرح تتم عبر **OpenAI API**، لذلك يحتاج كل من يشغّل المشروع **مفتاح API خاصًا به** من platform.openai.com. المفتاح غير موجود في المستودع ولا يُرفع عليه أبدًا. كل جلسة تحليل كاملة تكلّف بضعة سنتات تقريبًا. أما البحث في المصادر (التضمين) فيعمل محليًا على الجهاز دون مفتاح.
+
+**المتطلبات:** Python 3.12 أو أحدث، وNode.js 18 أو أحدث، واتصال بالإنترنت في أول تشغيل، ونحو 1 جيجابايت من الذاكرة.
+
+**1. الخادم (backend):**
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate              # على macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+copy .env.example .env              # على macOS/Linux: cp .env.example .env
+```
+
+افتحوا الملف `backend/.env` وضعوا مفتاحكم بعد `LLM_API_KEY=` (دون مسافات أو علامات تنصيص)، ثم:
+
+```bash
+python -m rag.ingest                # مرة واحدة فقط: يحمّل القرآن وصحيحي البخاري ومسلم ويبني الفهرس (نحو 25 دقيقة)
+uvicorn main:app --port 8000
+```
+
+**2. الواجهة (frontend)** في نافذة طرفية ثانية:
+
+```bash
+cd frontend
+copy .env.example .env.local        # على macOS/Linux: cp .env.example .env.local
+npm install
+npm run dev
+```
+
+ثم افتحوا http://localhost:3000 ، وابدؤوا من صفحة «اختبر المحتوى». إذا لم يُضبط المفتاح يظهر في الموقع تنبيه واضح بذلك.
+
+**مشكلات شائعة:**
+- رسالة «بلغ مزوّد نموذج اللغة حدّ الاستخدام»: الرصيد أو الحصة في حساب OpenAI انتهت؛ أضيفوا رصيدًا أو استخدموا مفتاحًا آخر.
+- أول طلب بعد تشغيل الخادم أبطأ قليلًا لأنه يحمّل فهرس 21,501 نصًا في الذاكرة.
+- لاستخدام مزوّد آخر (Gemini أو Anthropic) غيّروا `LLM_PROVIDER` و`LLM_MODEL` في `.env`.
 
 ---
 
@@ -143,38 +180,20 @@ cd backend && python -m pytest -q
 
 ## 4. Running locally
 
-Requirements: Python 3.12+, Node 18+.
-
-```bash
-cd backend
-python -m venv .venv
-.venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-copy .env.example .env            # macOS/Linux: cp .env.example .env, then set LLM_API_KEY
-python -m rag.ingest
-uvicorn main:app --port 8000
-```
-
-```bash
-cd frontend
-copy .env.example .env.local      # NEXT_PUBLIC_API_URL=http://localhost:8000
-npm install
-npm run dev                       # http://localhost:3000
-```
+See the Arabic quick start at the top of this file. In short: create `backend/.env` from `.env.example` and set `LLM_API_KEY` (an OpenAI API key; the system calls the OpenAI API), run `python -m rag.ingest` once, start `uvicorn main:app --port 8000`, then `npm install && npm run dev` in `frontend`.
 
 ### Environment variables (`backend/.env`)
 
 | Variable | Meaning |
 |---|---|
-| `LLM_PROVIDER` | `openai` (or any OpenAI-compatible API with `LLM_BASE_URL`), `gemini`, `anthropic` |
-| `LLM_API_KEY` | your key (required) |
-| `LLM_MODEL` | optional; provider default otherwise |
+| `LLM_PROVIDER` | `openai` (default and used for the evaluation), or any OpenAI-compatible API with `LLM_BASE_URL`, `gemini`, `anthropic` |
+| `LLM_API_KEY` | your API key (required) |
+| `LLM_MODEL` | `gpt-4.1` in `.env.example`; smaller models produced inconsistent judgements in our tests |
 | `LLM_BASE_URL` | optional, for OpenAI-compatible providers |
 | `LLM_TEMPERATURE`, `LLM_TIMEOUT` | generation settings |
 | `EMBEDDING_PROVIDER`, `EMBEDDING_MODEL` | `local` multilingual ONNX model by default (no key) |
-| `RAG_TOP_K`, `RAG_MIN_RELEVANCE`, `RAG_RELATIVE_MARGIN` | retrieval strictness (4, 0.5, 0.15) |
+| `RAG_TOP_K`, `RAG_MIN_RELEVANCE`, `RAG_MIN_RELEVANCE_QURAN`, `RAG_RELATIVE_MARGIN` | retrieval strictness (4, 0.6, 0.45, 0.15) |
 | `APP_ENV` | `production` uses only sources with `review_status: reviewed` |
-| `DEMO_MODE` | exposes sample inputs on the analyze page |
 | `CORS_ORIGINS` | allowed frontend origins |
 
 ## 5. Knowledge base
@@ -213,4 +232,4 @@ maana-ai/
 └── render.yaml
 ```
 
-**API:** `POST /api/content/analyze` · `POST /api/understanding/analyze` · `POST /api/content/refine` · `POST /api/understanding/retest` · `GET /api/session/{id}` · `GET /api/session/{id}/progress` · `GET /api/dashboard` · `GET /api/sources` · `GET /api/demo` · `GET /api/health`
+**API:** `POST /api/content/analyze` · `POST /api/understanding/analyze` · `POST /api/content/refine` · `POST /api/understanding/retest` · `GET /api/session/{id}` · `GET /api/session/{id}/progress` · `GET /api/dashboard` · `GET /api/sources` · `GET /api/evaluation` · `GET /api/health`

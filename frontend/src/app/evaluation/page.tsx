@@ -41,7 +41,6 @@ export default function EvaluationPage() {
   if (!data) return <Loading />;
 
   const m = data.metrics;
-  const model = data.mode.replace(/^full \(/, "").replace(/\)$/, "");
   const date = data.generated_at ? new Date(data.generated_at).toLocaleDateString("ar", { dateStyle: "long" }) : "—";
 
   return (
@@ -50,9 +49,6 @@ export default function EvaluationPage() {
       <p className="-mt-6 flex flex-wrap gap-x-6 gap-y-1 text-sm text-navy-500">
         <span>
           {e.runInfo}: {date}
-        </span>
-        <span>
-          {e.model}: <bdi className="font-latin">{model}</bdi>
         </span>
         <span>
           <bdi className="font-latin">{m.n_cases}</bdi> {e.cases}

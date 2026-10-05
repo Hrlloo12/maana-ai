@@ -11,7 +11,6 @@ from config import settings
 from graph.maana_graph import WorkflowStageError
 from graph.progress import get_progress
 from llm import LLMError
-from llm.client import DEFAULT_MODELS
 from rag.ingest import load_collections
 from rag.retriever import get_retriever
 from services.session_service import dashboard, get_workflow, persist, session_view
@@ -72,8 +71,6 @@ def _require(session_id: str) -> None:
 def health():
     return {
         "status": "ok",
-        "llm_provider": settings.llm_provider,
-        "llm_model": settings.llm_model or DEFAULT_MODELS.get(settings.llm_provider, ""),
         "llm_configured": bool(settings.llm_api_key),
         "embedding_provider": settings.embedding_provider,
         "vector_index_ready": (settings.index_dir / "faiss.index").exists(),
@@ -174,7 +171,6 @@ def get_evaluation():
         })
     return {
         "generated_at": results.get("generated_at"),
-        "mode": results.get("mode"),
         "metrics": results.get("metrics", {}),
         "categories": results.get("categories", {}),
         "cases": cases,

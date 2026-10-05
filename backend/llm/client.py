@@ -15,7 +15,7 @@ logger = logging.getLogger("maana.llm")
 T = TypeVar("T", bound=BaseModel)
 
 DEFAULT_MODELS = {
-    "openai": "gpt-4o-mini",
+    "openai": "gpt-4.1",
     "gemini": "gemini-3.5-flash",
     "anthropic": "claude-opus-5",
 }

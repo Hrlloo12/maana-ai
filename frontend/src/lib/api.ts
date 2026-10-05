@@ -251,7 +251,6 @@ export interface EvaluationCase {
 
 export interface Evaluation {
   generated_at: string;
-  mode: string;
   metrics: Record<string, number | null>;
   categories: Record<string, { n: number; status_accuracy: number | null }>;
   cases: EvaluationCase[];
@@ -259,8 +258,6 @@ export interface Evaluation {
 
 export interface Health {
   status: string;
-  llm_provider: string;
-  llm_model: string;
   llm_configured: boolean;
   vector_index_ready: boolean;
   app_env: string;
