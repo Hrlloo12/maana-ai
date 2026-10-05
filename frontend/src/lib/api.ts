@@ -1,6 +1,7 @@
 import { strings } from "./i18n";
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const CONFIGURED_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_URL = CONFIGURED_API_URL === "same-origin" ? "" : CONFIGURED_API_URL.replace(/\/$/, "");
 
 export type GapStatus = "understood" | "partial_gap" | "major_gap" | "insufficient_evidence";
 export type Stage = "awaiting_response" | "gap_detected" | "awaiting_retest" | "completed" | "abstained" | "processing";

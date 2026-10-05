@@ -210,8 +210,14 @@ Each ayah is one passage; each hadith is one passage (the few hadith longer than
 
 ## 6. Deployment
 
-- **Backend → Render:** `render.yaml` (build, ingestion, start). Set `LLM_API_KEY` in the dashboard and `CORS_ORIGINS` to the frontend URL. Building the index downloads the corpus and embeds 21,501 passages (about 25 minutes, roughly 1 GB of RAM), so use an instance with at least 1 GB of memory, or build `backend/data/index/` locally and ship it with the service.
-- **Frontend → Netlify:** base directory `frontend`, `netlify.toml` builds the static export; set `NEXT_PUBLIC_API_URL` to the backend URL.
+**Recommended: Hugging Face Spaces (free, one link for the site and the API).** `deploy/huggingface/` contains a Docker image that builds the frontend, serves it from the FastAPI server, and builds the RAG index while the image is built.
+
+1. Create a free account at https://huggingface.co and a **Write** access token at https://huggingface.co/settings/tokens.
+2. Log in from the project folder: `backend\.venv\Scripts\hf auth login` (paste the token in the terminal, never in a file or chat).
+3. Publish: `backend\.venv\Scripts\python deploy\huggingface\publish.py <username>/maana-ai --set-key` (`--set-key` stores `LLM_API_KEY` from `backend/.env` as a Space secret; it is never written to the repository).
+4. The first build takes about 30-40 minutes. The site is then available to anyone at `https://<username>-maana-ai.hf.space`. A free Space sleeps after a period without visits and wakes on the next visit.
+
+**Alternative: Render + Netlify.** `render.yaml` deploys the backend and `frontend/netlify.toml` the static frontend (set `NEXT_PUBLIC_API_URL` to the backend URL and `CORS_ORIGINS` to the frontend URL). The backend needs about 2 GB of memory, so Render's free and starter plans are not enough.
 
 ## 7. Project structure
 
@@ -229,6 +235,7 @@ maana-ai/
 │   ├── data/          sources and demo inputs
 │   └── tests/
 ├── frontend/          Next.js 14 static export, TypeScript, Tailwind, Arabic RTL UI
+├── deploy/huggingface Docker image and publish script for Hugging Face Spaces
 └── render.yaml
 ```
 

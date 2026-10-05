@@ -3,11 +3,13 @@ from __future__ import annotations
 import logging
 import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from api.routes import router
 from config import settings
@@ -57,6 +59,12 @@ async def unexpected_error(_: Request, exc: Exception):
     return JSONResponse(status_code=500, content={"detail": SERVER_ERROR})
 
 
-@app.get("/")
-def root():
-    return {"name": "MA'NA", "docs": "/docs", "health": "/api/health"}
+SITE_DIR = Path(__file__).resolve().parent / "site"
+
+if SITE_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=SITE_DIR, html=True), name="site")
+else:
+
+    @app.get("/")
+    def root():
+        return {"name": "MA'NA", "docs": "/docs", "health": "/api/health"}
